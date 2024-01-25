@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matriz Inversa (2x2)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: linear-gradient(to right, red, blue);
+            color: white;
+        }
+
+        input {
+            width: 40px;
+            text-align: center;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #inputMatrix,
+        #resultMatrix {
+            border-collapse: collapse;
+            margin: 10px auto;
+            background-color: white;
+        }
+
+        #inputMatrix td,
+        #resultMatrix td {
+            border: 1px solid black;
+            padding: 5px;
+            color: black;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Matriz Inversa (2x2)</h1>
+
+    <h3>Ingrese la matriz:</h3>
+
+    <table id="inputMatrix">
+        <tr>
+            <td><input type="number" id="a"></td>
+            <td><input type="number" id="b"></td>
+        </tr>
+        <tr>
+            <td><input type="number" id="c"></td>
+            <td><input type="number" id="d"></td>
+        </tr>
+    </table>
+
+    <br>
+
+    <button onclick="calcularInversa()">Calcular Inversa</button>
+
+    <h3>Matriz Inversa:</h3>
+    <table id="resultMatrix"></table>
+
+    <script>
+        function getMatrixInput() {
+            const a = math.fraction(parseFloat(document.getElementById("a").value));
+            const b = math.fraction(parseFloat(document.getElementById("b").value));
+            const c = math.fraction(parseFloat(document.getElementById("c").value));
+            const d = math.fraction(parseFloat(document.getElementById("d").value));
+
+            return [[a, b], [c, d]];
+        }
+
+        function mostrarMatriz(matrix, elementId) {
+            const resultElement = document.getElementById(elementId);
+            resultElement.innerHTML = "";
+
+            const table = document.createElement("table");
+
+            for (let i = 0; i < matrix.length; i++) {
+                const row = table.insertRow();
+                for (let j = 0; j < matrix[i].length; j++) {
+                    const cell = row.insertCell();
+                    const fraction = matrix[i][j];
+                    const formatted = math.isInteger(fraction) ? fraction.n : math.format(fraction);
+                    cell.textContent = formatted;
+                }
+            }
+
+            resultElement.appendChild(table);
+        }
+
+        function calcularDeterminante(matrix) {
+            return math.subtract(math.multiply(matrix[0][0], matrix[1][1]), math.multiply(matrix[0][1], matrix[1][0]));
+        }
+
+        function calcularInversa() {
+            const matrix = getMatrixInput();
+            const determinante = calcularDeterminante(matrix);
+
+            if (!math.equal(determinante, 0)) {
+                const inversa = obtenerInversa(matrix, determinante);
+                mostrarMatriz(inversa, "resultMatrix");
+            } else {
+                alert("La matriz no tiene inversa porque su determinante es 0.");
+            }
+        }
+
+        function obtenerInversa(matrix, determinante) {
+            const a = math.divide(matrix[1][1], determinante);
+            const b = math.multiply(-1, matrix[0][1], math.divide(1, determinante));
+            const c = math.multiply(-1, matrix[1][0], math.divide(1, determinante));
+            const d = math.divide(matrix[0][0], determinante);
+
+            return [[a, b], [c, d]];
+        }
+    </script>
+</body>
+</html>
